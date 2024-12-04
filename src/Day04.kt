@@ -102,7 +102,55 @@ fun main() {
     }
 
     fun part2(input: List<String>): Int {
-        return input.size
+        val width = input[0].length - 1
+        val height = input.size - 1
+
+        val possibleSearches = mutableListOf<List<String>>()
+
+        for (row in 0 .. height){
+            for (col in 0 .. width) {
+                var letter = input[row][col]
+
+                if (letter == 'A') {
+                    possibleSearches.addFirst(printMatrix(input, Pair(row, col), 1))
+                }
+            }
+        }
+
+//        print(possibleSearches)
+
+        var sum = 0
+
+//        println("SEARCHING MATRICES")
+        possibleSearches.forEach { matrix ->
+//            println("Searching Matrix:")
+            val origin = Pair(1, 1)
+//            printMatrix(matrix, origin, 1)
+//            println("=========")
+
+            val possibleDirections = mutableListOf(Direction.NE, Direction.NW, Direction.SE, Direction.SW)
+            var twoMatches = 0
+            for (direction in possibleDirections) {
+                var coords = addCoords(origin, direction.relativeCoords)
+                var letter = matrix[coords.first][coords.second]
+                if (letter == 'M') {
+//                    println("$coords, $letter")
+                    coords = addCoords(origin, Pair(-direction.relativeCoords.first, -direction.relativeCoords.second))
+                    letter = matrix[coords.first][coords.second]
+                    if(letter == 'S'){
+//                        println("$coords, $letter")
+                        twoMatches++
+                    }
+                }
+            }
+            if (twoMatches == 2) {
+                sum++
+//                println("Adding SUM: $sum")
+            }
+
+        }
+
+        return sum
     }
 
     // Read the input from the `src/Day04.txt` file.
