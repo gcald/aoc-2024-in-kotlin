@@ -136,9 +136,7 @@ fun main() {
     fun part1(input: List<String>): Int {
         var multiplication = findInstructions(input, "mul(***,***)")
 
-        var sum = sumAndMultiply(multiplication)
-
-        return sum
+        return sumAndMultiply(multiplication)
     }
 
     fun part2(input: List<String>): Int {
