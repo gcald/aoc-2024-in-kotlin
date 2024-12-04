@@ -60,6 +60,66 @@ fun main() {
         return possibleStrings
     }
 
+    fun findInstructionsMap(
+        input: List<String>,
+        state: String,
+    ): MutableMap<Int, String> {
+        var possibleStringsMap = mutableMapOf<Int, String>()
+
+        var buffer = ""
+        var totalIdx = 0
+        var idx = 0
+        input.forEach { line ->
+            line.forEach { char ->
+                totalIdx++
+                if (char == state[idx]) {
+                    buffer += char
+
+                    if (idx != state.length - 1) {
+                        idx++
+                        return@forEach
+                    }
+
+                    possibleStringsMap.put(totalIdx, buffer)
+                }
+
+                if (state[idx] == '*') {
+                    var nextChar = state[idx]
+                    var nextIdx = 0
+
+                    while (nextChar == '*') {
+                        nextIdx++
+                        nextChar = state[idx + nextIdx]
+                    }
+
+                    when {
+                        char.isDigit() -> {
+                            buffer += char
+                            idx++
+                            return@forEach
+                        }
+
+                        char == nextChar -> {
+                            buffer += char
+                            idx += nextIdx
+
+                            if (idx != state.length - 1) {
+                                idx++
+                                return@forEach
+                            }
+
+                            possibleStringsMap.put(totalIdx, buffer)
+                        }
+                    }
+                }
+
+                idx = 0
+                buffer = ""
+            }
+        }
+        return possibleStringsMap
+    }
+
     fun sumAndMultiply(possibleStrings: MutableList<String>): Int {
         var sum = 0
 
