@@ -1,19 +1,21 @@
 
 fun main() {
 
-    fun part1(input: List<String>): Int {
-        val state = "mul(***,***)"
 
+    fun findInstructions(
+        input: List<String>,
+        state: String
+    ): MutableList<String> {
         var possibleStrings = mutableListOf<String>()
 
         var buffer = ""
         var idx = 0
         input.forEach { line ->
             line.forEach { char ->
-                if (char == state[idx]){
+                if (char == state[idx]) {
                     buffer += char
 
-                    if(idx != state.length - 1) {
+                    if (idx != state.length - 1) {
                         idx++
                         return@forEach
                     }
@@ -36,11 +38,12 @@ fun main() {
                             idx++
                             return@forEach
                         }
+
                         char == nextChar -> {
                             buffer += char
                             idx += nextIdx
 
-                            if(idx != state.length - 1) {
+                            if (idx != state.length - 1) {
                                 idx++
                                 return@forEach
                             }
@@ -54,7 +57,10 @@ fun main() {
                 buffer = ""
             }
         }
+        return possibleStrings
+    }
 
+    fun sumAndMultiply(possibleStrings: MutableList<String>): Int {
         var sum = 0
 
         possibleStrings.forEach { string: String ->
@@ -64,7 +70,13 @@ fun main() {
 
             sum += operands[0].toInt() * operands[1].toInt()
         }
+        return sum
+    }
 
+    fun part1(input: List<String>): Int {
+        var multiplication = findInstructions(input, "mul(***,***)")
+
+        var sum = sumAndMultiply(multiplication)
 
         return sum
     }
