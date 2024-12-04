@@ -1,22 +1,20 @@
 
 fun main() {
 
-    fun printMatrix(input: List<String>, coords: Pair<Int, Int>): List<String> {
-//        val search = "XMAS"
-//        println("${coords} ${input}")
+    fun printMatrix(input: List<String>, coords: Pair<Int, Int>, matrixSize: Int): List<String> {
 
         var matrix = mutableListOf<String>()
 
         val (x, y) = coords
 
-        for (row in x-4 .. x+4) {
+        for (row in x-matrixSize .. x+matrixSize) {
             if (row < 0 || row > input.size - 1) {
                 println("..........")
                 matrix.add("..........")
                 continue
             }
             var line = ""
-            for (col in y-4 .. y+4) {
+            for (col in y-matrixSize .. y+matrixSize) {
                 if (col < 0 || col > input.size - 1) {
                     print('.')
                     line += '.'
@@ -50,7 +48,7 @@ fun main() {
                 var letter = input[row][col]
 
                 if (letter == 'X') {
-                    possibleSearches.addFirst(printMatrix(input, Pair(row, col)))
+                    possibleSearches.addFirst(printMatrix(input, Pair(row, col), 4))
                 }
             }
         }
