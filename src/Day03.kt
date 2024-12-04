@@ -142,7 +142,32 @@ fun main() {
     }
 
     fun part2(input: List<String>): Int {
-        return input.size
+        var multiplication = findInstructionsMap(input, "mul(***,***)")
+        var dos = findInstructionsMap(input, "do()")
+        var donts = findInstructionsMap(input, "don't()")
+
+        var merged = multiplication + dos + donts
+        merged = merged.toSortedMap()
+
+        var isEnabled = true
+        var enabledMults = mutableListOf<String>()
+        merged.forEach { idx, string ->
+            when (string) {
+                "don't()" -> {
+                    isEnabled = false
+                }
+                "do()" -> {
+                    isEnabled = true
+                }
+                else -> {
+                    if (isEnabled) {
+                        enabledMults.add(string)
+                    }
+                }
+            }
+        }
+
+        return sumAndMultiply(enabledMults)
     }
 
     // Read the input from the `src/Day03.txt` file.
