@@ -35,6 +35,40 @@ fun main() {
         return antinodes
     }
 
+    fun isInBounds(bounds: Pair<Int, Int>, coords: Pair<Int, Int>): Boolean {
+        val (row, col) = coords
+        val (height, width) = bounds
+
+        val inRowRange = 0 <= row && row <= height
+        val inColRange = 0 <= col && col <= width
+
+        return inRowRange && inColRange
+    }
+
+    fun generateMultipleAntinodes(bounds: Pair<Int, Int>, start: Pair<Int, Int>, end: Pair<Int, Int>): MutableSet<Pair<Int, Int>> {
+        var antinodes = mutableSetOf<Pair<Int, Int>>()
+
+        // [ROW/Y, COL/X]
+        // Row, Col
+        val rise = end.first - start.first
+        val run = end.second - start.second
+
+        var coords = start
+        while(isInBounds(bounds, coords)){
+            antinodes.add(coords)
+            coords = Pair(coords.first - rise, coords.second - run)
+        }
+        
+        //Split into while loops
+        coords = end
+        while(isInBounds(bounds, coords)) {
+            antinodes.add(coords)
+            coords = Pair(coords.first + rise, coords.second + run)
+        }
+
+        return antinodes
+    }
+
     fun part1(input: List<String>): Int {
         var charMap = createAntennaMap(input)
 
@@ -65,8 +99,33 @@ fun main() {
     }
 
     fun part2(input: List<String>): Int {
+        var charMap = createAntennaMap(input)
+        var bounds = Pair(input.size - 1, input[0].length - 1)
 
-        return input.size
+        var antinodes = mutableSetOf<Pair<Int, Int>>()
+
+        for (antennasEntry in charMap) {
+            val antennas = antennasEntry.value
+            for (antenna in antennas) {
+                val otherAntennas = antennas.minus(antenna)
+                for (other in otherAntennas) {
+                    antinodes += generateMultipleAntinodes(bounds, antenna, other)
+                    antinodes += generateAntinodes(antenna, other)
+                }
+            }
+        }
+
+        val height = input.size - 1
+        val width = input[0].length - 1
+
+        val filtered = antinodes.filter { (row, col) ->
+            val inRowRange = 0 <= row && row <= height
+            val inColRange = 0 <= col && col <= width
+
+            inRowRange && inColRange
+        }
+
+        return filtered.size
     }
 
     // Read the input from the `src/Day01.txt` file.
